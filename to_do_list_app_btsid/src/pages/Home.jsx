@@ -32,12 +32,31 @@ const Home = () => {
 
   const handleDelete = async (id) => {
     try {
+      // Fetch items of the checklist
+      const response = await axios.get(`http://94.74.86.174:8080/api/checklist/${id}/item`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      // Delete each item
+      const items = response.data.data;
+      for (const item of items) {
+        await axios.delete(`http://94.74.86.174:8080/api/checklist/${id}/item/${item.id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+      }
+
+      // Delete the checklist
       await axios.delete(`http://94.74.86.174:8080/api/checklist/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setChecklists(checklists.filter((checklist) => checklist.id !== id));
+
+      setChecklists((prevChecklists) => prevChecklists.filter((checklist) => checklist.id !== id));
       toast.success("To-Do List deleted successfully!");
     } catch (error) {
       console.error("Error deleting to-do list:", error);
@@ -59,7 +78,7 @@ const Home = () => {
       {showForm && (
         <AddToDoForm onClose={() => setShowForm(false)} onAdd={handleAddToDo} />
       )}
-      <AllCheckList checklists={checklists} onDelete={handleDelete} />
+      <AllCheckList checklists={checklists} setChecklists={setChecklists} onDelete={handleDelete} />
     </div>
   );
 };
