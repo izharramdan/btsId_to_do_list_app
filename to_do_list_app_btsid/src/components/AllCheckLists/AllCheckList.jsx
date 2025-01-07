@@ -11,6 +11,7 @@ const AllCheckList = ({ checklists, onDelete }) => {
       {checklists.map((checklist) => (
         <div key={checklist.id} className={`m-4 p-4 w-64 rounded shadow-md ${getRandomColor()}`}>
           <div className="flex items-center">
+            <input type="radio" className="mr-2" />
             <h3 className="text-lg font-bold">{checklist.name}</h3>
           </div>
           <p>{checklist.description}</p>
